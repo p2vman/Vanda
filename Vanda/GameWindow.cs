@@ -76,6 +76,5 @@ public class GameWindow : UnsafeWindow, IRenderable
     public void Render(Graphics graphics)
     {
         screen?.Render(graphics);
-        SwapBuffers();
     }
 }

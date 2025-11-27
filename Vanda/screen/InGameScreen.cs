@@ -3,15 +3,14 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using StbImageSharp;
 
 namespace Vanda.screen;
 
 
 public class InGameScreen : Screen
 {
-    public Texture texture = new Texture("./madaotheory-Anime-Artist-artist-8588752.png");
     public Shader shader;
-    public VertexBuffer buffer = new VertexBuffer();
     public Camera camera = new Camera();
     
     private float _pitch = 0;
@@ -80,10 +79,25 @@ public class InGameScreen : Screen
         camera.UpdateCameraVectors(_yaw, _pitch);
     }
 
-
+    public TextureAtlas Atlas = new TextureAtlas();
+    public uint DroneTexture;
+    public uint Texture2;
+    
 
     public override void Initialize(UnsafeWindow window)
     {
+        using (var stream = File.OpenRead("./Drone Images.jpeg"))
+        {
+            DroneTexture = Atlas.AddTexture(ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha));
+            
+        }
+        
+        using (var stream = File.OpenRead("./101ho-artist-comissar-Pornhammer-8883238.png"))
+        {
+            Texture2 = Atlas.AddTexture(ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha));
+            
+        }
+        
         shader = new Shader(Resources.VertexShader, Resources.FragmentShader);
         base.Initialize(window);
     }
@@ -102,36 +116,40 @@ public class InGameScreen : Screen
         shader.SetMatrix4("projection", proj);
         shader.SetMatrix4("model", Matrix4.CreateTranslation(0,0,0));
         shader.SetVector3("world_position", new Vector3());
+        
+        Atlas.Bind();
 
-        buffer.VertexUv(new VertexUv { X = 0, Y = 0, Z = 0, U = 0, V = 0 });
-        buffer.VertexUv(new VertexUv { X = 1, Y = 0, Z = 0, U = 1, V = 0 });
-        buffer.VertexUv(new VertexUv { X = 1, Y = 1, Z = 0, U = 1, V = 1 });
-        buffer.VertexUv(new VertexUv { X = 0, Y = 1, Z = 0, U = 0, V = 1 });
 
-        
-        buffer.Index([0, 1, 2, 2, 3, 0]);
-        
-        var (v,i) = buffer.Flush();
-        
-        
-        GL.BindVertexArray(buffer._vao);
-        GL.BindTexture(TextureTarget.Texture2D, texture.Get());
-        GL.DrawElements(PrimitiveType.Triangles, i, DrawElementsType.UnsignedInt, 0);
-        
-        buffer.VertexUv(new VertexUv { X = 0, Y = 0, Z = 0, U = 0, V = 0 });
-        buffer.VertexUv(new VertexUv { X = -1, Y = 0, Z = 0, U = 1, V = 0 });
-        buffer.VertexUv(new VertexUv { X = -1, Y = -1, Z = 0, U = 1, V = 1 });
-        buffer.VertexUv(new VertexUv { X = 0, Y = -1, Z = 0, U = 0, V = 1 });
+        using (var buffer = new VertexBuffer())
+        {
+            buffer.BintAtlas(Atlas);
+            
+            buffer.Bind();
+            buffer.BindTexture(Texture2);
+            buffer.VertexUv(new VertexUv { X = 0, Y = 0, Z = 0, U = 0, V = 0 });
+            buffer.VertexUv(new VertexUv { X = 1, Y = 0, Z = 0, U = 1, V = 0 });
+            buffer.VertexUv(new VertexUv { X = 1, Y = 1, Z = 0, U = 1, V = 1 });
+            buffer.VertexUv(new VertexUv { X = 0, Y = 1, Z = 0, U = 0, V = 1 });
 
         
-        buffer.Index([0, 1, 2, 2, 3, 0]);
+            buffer.Index([0, 1, 2, 2, 3, 0]);
         
-        (v,i) = buffer.Flush();
+            buffer.Bind();
+            buffer.BindTexture(DroneTexture);
+            buffer.VertexUv(new VertexUv { X = 0, Y = 0, Z = 0, U = 0, V = 0 });
+            buffer.VertexUv(new VertexUv { X = -1, Y = 0, Z = 0, U = 1, V = 0 });
+            buffer.VertexUv(new VertexUv { X = -1, Y = -1, Z = 0, U = 1, V = 1 });
+            buffer.VertexUv(new VertexUv { X = 0, Y = -1, Z = 0, U = 0, V = 1 });
+
+        
+            buffer.Index([0, 1, 2, 2, 3, 0]);
+        
+            var (v,i) = buffer.Flush();
         
         
-        GL.BindVertexArray(buffer._vao);
-        GL.BindTexture(TextureTarget.Texture2D, texture.Get());
-        GL.DrawElements(PrimitiveType.Triangles, i, DrawElementsType.UnsignedInt, 0);
+            GL.BindVertexArray(buffer._vao);
+            GL.DrawElements(PrimitiveType.Triangles, i, DrawElementsType.UnsignedInt, 0);
+        }
         
         base.Render(graphics);
     }

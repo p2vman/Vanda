@@ -40,14 +40,45 @@ public class VertexBuffer : IDisposable
         GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, stride, 3 * sizeof(float));
     }
 
+    private uint baseVertex = 0;
+    public void Bind()
+    {
+        baseVertex = (uint)vertices.Count;
+    }
+
+    private AtlasTexture _texture;
+    public void BindTexture(uint texture)
+    {
+        _texture = _atlas!.Textures[(int)texture];
+    }
+
+    private TextureAtlas? _atlas;
+    public void BintAtlas(TextureAtlas atlas)
+    {
+        _atlas = atlas;
+    }
+
     public void VertexUv(VertexUv uv)
     {
+        if (_atlas != null)
+        { ;
+            float u1 = (float)_texture.OffsetX / _atlas.Width;
+            float v1 = (float)_texture.OffsetY / _atlas.Height;
+            float u2 = (float)(_texture.OffsetX + _texture.Width) / _atlas.Width;
+            float v2 = (float)(_texture.OffsetY + _texture.Height) / _atlas.Height;
+
+            // нормализуем UV
+            uv.U = u1 + uv.U * (u2 - u1);
+            uv.V = v1 + uv.V * (v2 - v1);
+        }
+
         vertices.Add(uv);
     }
 
     public void Index(uint[] indexes)
     {
-        indices.AddRange(indexes);
+        indices.AddRange(indexes.Select(x => x + baseVertex));
+
     }
 
     public (int, int) Flush()
@@ -76,7 +107,6 @@ public class VertexBuffer : IDisposable
                     BufferUsageHint.StaticDraw);
             }
         }
-        Clear();
         return (verticesSpan.Length, indicesSpan.Length);
     }
 
@@ -89,6 +119,8 @@ public class VertexBuffer : IDisposable
     public void Dispose()
     {
        Clear();
-       
+       GL.DeleteBuffer(_vbo);
+       GL.DeleteBuffer(_ebo);
+       GL.DeleteVertexArray(_vao);
     }
 }
