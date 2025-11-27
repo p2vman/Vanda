@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vanda", "Vanda\Vanda.csproj", "{4FC7E8E9-B9EE-454D-B833-10804ADDB2F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mushroom3d", "Mushroom3d\Mushroom3d.csproj", "{5E37406D-18C9-4E6A-8D1E-A3CDBA3204E1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4FC7E8E9-B9EE-454D-B833-10804ADDB2F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC7E8E9-B9EE-454D-B833-10804ADDB2F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FC7E8E9-B9EE-454D-B833-10804ADDB2F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FC7E8E9-B9EE-454D-B833-10804ADDB2F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E37406D-18C9-4E6A-8D1E-A3CDBA3204E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E37406D-18C9-4E6A-8D1E-A3CDBA3204E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E37406D-18C9-4E6A-8D1E-A3CDBA3204E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E37406D-18C9-4E6A-8D1E-A3CDBA3204E1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
